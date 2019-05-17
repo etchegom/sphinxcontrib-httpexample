@@ -144,7 +144,8 @@ def build_httpie_command(request):
                            separators=(',', ': ')))
 
         elif is_form(content_type):
-            parts.append(shlex_quote(data))
+            parts[0] += ' --form'
+            parts.append(data)
 
         else:
             redir_input = shlex_quote(data)
