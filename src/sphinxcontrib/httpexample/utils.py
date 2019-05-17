@@ -81,6 +81,18 @@ def is_json(content_type):
     return False
 
 
+def is_form(content_type):
+    """
+    Checks if the given content type should be treated as Form data.
+    """
+
+    parts = {part.strip() for part in content_type.lower().strip().split(';')}
+    if 'application/x-www-form-urlencoded' in parts:
+        return True
+
+    return False
+
+
 def add_url_params(url, params):
     """Add GET query parameters to provided URL.
 

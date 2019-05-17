@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from sphinxcontrib.httpexample.utils import is_json
+from sphinxcontrib.httpexample.utils import is_json, is_form
 from sphinxcontrib.httpexample.utils import maybe_str
 
 import ast
@@ -133,14 +133,19 @@ def build_httpie_command(request):
     # JSON or raw data
     data = maybe_str(request.data())
     if data:
+        content_type = request.headers.get('Content-Type', '')
 
-        if is_json(request.headers.get('Content-Type', '')):
+        if is_json(content_type):
             # We need to explicitly set the separators to get consistent
             # whitespace handling across Python 2 and 3. See
             # https://bugs.python.org/issue16333 for details.
             redir_input = shlex_quote(
                 json.dumps(data, indent=2, sort_keys=True,
                            separators=(',', ': ')))
+
+        elif is_form(content_type):
+            parts.append(shlex_quote(data))
+
         else:
             redir_input = shlex_quote(data)
 
